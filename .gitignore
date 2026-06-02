@@ -1,0 +1,88 @@
+# ── File app yang di-generate otomatis saat notebook dijalankan ──
+app_timeseries.py
+app_segmentasi.py
+
+# ── Python ───────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# ── Virtual environment ───────────────────────────────────────────
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ── Environment variables & secrets ──────────────────────────────
+.env
+.env.*
+*.env
+secrets.py
+config_secret.py
+ngrok_token.txt
+
+# ── Jupyter Notebook checkpoints ─────────────────────────────────
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# ── Data files ────────────────────────────────────────────────────
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# ── Model artifacts ───────────────────────────────────────────────
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+*.model
+
+# ── Log & cache ───────────────────────────────────────────────────
+*.log
+*.tmp
+*.cache
+.streamlit/
+__streamlit_cache__/
+
+# ── OS files ──────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDE ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
