@@ -1,6 +1,7 @@
 # ── File app yang di-generate otomatis saat notebook dijalankan ──
 app_timeseries.py
 app_segmentasi.py
+app_cnn.py
 
 # ── Python ───────────────────────────────────────────────────────
 __pycache__/

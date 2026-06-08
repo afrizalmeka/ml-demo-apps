@@ -1,6 +1,6 @@
 # 🤖 ML Demo Apps — Machine Learning Interactive Demo
 
-Dua aplikasi Streamlit interaktif untuk kelas Machine Learning, dirancang untuk dijalankan di **Google Colab** dengan akses publik via **ngrok tunneling**.
+Tiga aplikasi Streamlit interaktif untuk kelas Machine Learning, dirancang untuk dijalankan di **Google Colab** dengan akses publik via **ngrok tunneling**.
 
 ---
 
@@ -8,13 +8,14 @@ Dua aplikasi Streamlit interaktif untuk kelas Machine Learning, dirancang untuk 
 
 ```
 ml-demo-apps/
-└── ML_Demo_Apps.ipynb    ← Satu notebook berisi semua (setup + 2 app + runner)
+└── ML_Demo_Apps.ipynb    ← Satu notebook berisi semua (setup + 3 app + runner)
 ```
 
-Saat notebook dijalankan, dua file app akan dibuat otomatis di Colab:
+Saat notebook dijalankan, tiga file app akan dibuat otomatis di Colab:
 ```
-app_timeseries.py         ← App 1: Time Series Forecasting
-app_segmentasi.py         ← App 2: Customer Segmentation
+app_timeseries.py         ← App 1: Time Series Forecasting      (port 8501)
+app_segmentasi.py         ← App 2: Customer Segmentation        (port 8502)
+app_cnn.py                ← App 3: CNN Image Classification     (port 8503)
 ```
 
 ---
@@ -40,17 +41,19 @@ app_segmentasi.py         ← App 2: Customer Segmentation
 
 | Cell | Aksi | Keterangan |
 |------|------|------------|
-| **Cell 1** | ▶ Jalankan | Install semua dependencies (~1-2 menit) |
+| **Cell 1** | ▶ Jalankan | Install semua dependencies (~2-3 menit) |
 | **Cell 2** | Edit token lalu ▶ | Ganti `YOUR_NGROK_AUTHTOKEN_HERE` dengan token Anda |
 | **Cell 3** | ▶ Jalankan | Membuat file `app_timeseries.py` |
 | **Cell 4** | ▶ Jalankan | Membuat file `app_segmentasi.py` |
-| **Cell 5** | ▶ Jalankan | Menjalankan App 1 → klik URL yang muncul |
-| **Cell 6** | ▶ Jalankan | Menjalankan App 2 → klik URL yang muncul |
-| **Cell 7** | *(Opsional)* | Menghentikan semua tunnel ngrok |
+| **Cell 5** | ▶ Jalankan | Membuat file `app_cnn.py` |
+| **Cell 6** | ▶ Jalankan | Menjalankan App 1 → klik URL yang muncul |
+| **Cell 7** | ▶ Jalankan | Menjalankan App 2 → klik URL yang muncul |
+| **Cell 8** | ▶ Jalankan | Menjalankan App 3 → klik URL yang muncul |
+| **Cell 9** | *(Opsional)* | Menghentikan semua tunnel ngrok |
 
 **4. Buka Aplikasi**
 
-Setelah Cell 5 atau 6 dijalankan, output akan tampil seperti ini:
+Setelah cell runner dijalankan, output akan tampil seperti ini:
 ```
 =======================================================
 🔮 TIME SERIES FORECASTING APP — SIAP DIGUNAKAN
@@ -160,6 +163,80 @@ usia,pengeluaran,frekuensi,kota
 
 ---
 
+## 🧠 App 3: CNN Image Classification
+
+**File:** `app_cnn.py` | **Port:** `8503` | **Sesi:** 4 — Deep Learning
+
+Demo klasifikasi gambar menggunakan **Convolutional Neural Network (CNN)** dengan PyTorch pada dataset CIFAR-10.
+
+### Dataset
+**CIFAR-10** — 60.000 gambar berwarna ukuran **32×32 piksel**, 10 kelas:
+
+| Kelas | Emoji | Kelas | Emoji |
+|-------|-------|-------|-------|
+| Pesawat | ✈️ | Rusa | 🦌 |
+| Mobil | 🚗 | Anjing | 🐶 |
+| Burung | 🐦 | Katak | 🐸 |
+| Kucing | 🐱 | Kuda | 🐴 |
+| — | — | Kapal | 🚢 |
+| — | — | Truk | 🚛 |
+
+### Arsitektur Model — SimpleCNN
+```
+Input (3×32×32)
+    ↓ Blok 1: Conv2d(3→32) → BN → ReLU → Conv2d(32→32) → BN → ReLU → MaxPool2d → Dropout2d
+    ↓ Blok 2: Conv2d(32→64) → BN → ReLU → Conv2d(64→64) → BN → ReLU → MaxPool2d → Dropout2d
+    ↓ Flatten (64×8×8 = 4.096)
+    ↓ Linear(4096→256) → ReLU → Dropout(0.4)
+    ↓ Linear(256→10) → Softmax
+Output: 10 probabilitas kelas
+```
+
+### Parameter Training (Sidebar)
+| Parameter | Pilihan | Default | Keterangan |
+|-----------|---------|---------|------------|
+| Data Latih | 500 / 1.000 / 2.000 / 5.000 | 1.000 | Subset dari 50.000 data train CIFAR-10 |
+| Data Uji | 200 / 500 / 1.000 | 500 | Subset dari 10.000 data test CIFAR-10 |
+| Model | CNN / MLP | CNN | CNN = konvolusi; MLP = fully-connected saja |
+| Epoch | 1–20 | 5 | Berapa kali model melihat seluruh data latih |
+| Batch Size | 32 / 64 / 128 | 64 | Jumlah sampel per update gradien |
+| Learning Rate | 0.0001–0.1 | 0.001 | Kecepatan update bobot |
+| Optimizer | Adam / SGD | Adam | Adam = adaptif; SGD = klasik dengan momentum |
+
+### Cara Prediksi Gambar (Tab 2)
+Setelah model selesai dilatih, buka tab **🔍 Prediksi Gambar**. Tersedia **dua pilihan input**:
+
+**Opsi 1 — 🎲 Gunakan Sampel dari Dataset CIFAR-10**
+- Tekan tombol **🎲 Acak Gambar** untuk ambil gambar acak
+- Atau filter berdasarkan kelas tertentu (✈️ Pesawat, 🚗 Mobil, dll.)
+- Atau geser slider untuk navigasi manual per indeks
+- Gambar langsung ditampilkan beserta kelas aslinya
+- Hasil prediksi + confidence muncul otomatis
+
+**Opsi 2 — 📁 Upload Gambar Sendiri**
+- Upload file JPG / PNG dari perangkat Anda
+- Model otomatis meresize ke 32×32 piksel
+- Tampilan side-by-side: gambar asli vs hasil resize
+- Prediksi dijalankan otomatis setelah upload
+
+### Tabs
+- **📈 Hasil Training** — Grafik akurasi & loss per epoch (live update saat training), deteksi overfitting otomatis
+- **🔍 Prediksi Gambar** — Prediksi dengan 2 pilihan input (sampel CIFAR-10 atau upload sendiri)
+- **🏗️ Arsitektur CNN** — Tabel layer-by-layer, diagram dimensi data, penjelasan konsep kunci
+- **⚖️ CNN vs ML Klasik** — Benchmark CNN vs SVM (RBF) vs Random Forest pada piksel mentah
+
+### Konsep yang Dipelajari
+- Konvolusi (Conv2d) — deteksi pola spasial lokal
+- Batch Normalization — stabilisasi training
+- Max Pooling — reduksi dimensi + translasi invariance
+- Dropout — regularisasi untuk mencegah overfitting
+- Feature learning vs feature engineering manual
+- Overfitting detection (gap train vs val accuracy)
+- Perbandingan CNN vs ML klasik pada data gambar
+- Distribusi shift — kenapa akurasi pada gambar luar dataset bisa turun
+
+---
+
 ## 🛠️ Dependencies
 
 ```
@@ -170,6 +247,9 @@ scikit-learn
 pandas
 numpy
 yfinance
+torch
+torchvision
+Pillow
 ```
 
 Semua diinstall otomatis via Cell 1 notebook.
@@ -180,7 +260,7 @@ Semua diinstall otomatis via Cell 1 notebook.
 
 ### Error: "tunnel limit reached" / "too many connections"
 ```python
-# Jalankan Cell 7 untuk kill semua tunnel, lalu jalankan ulang Cell 5/6
+# Jalankan Cell 9 (kill cell) untuk stop semua tunnel, lalu jalankan ulang runner cell
 ngrok.kill()
 ```
 
@@ -198,14 +278,18 @@ ngrok.kill()
 - Jika loading lama, tunggu ~10 detik lalu refresh
 
 ### Runtime Colab timeout / restart
-- Semua cell harus dijalankan ulang dari awal (Cell 1 → 2 → 3 → 4 → 5/6)
-- File `.py` hilang saat runtime restart, Cell 3 & 4 harus dijalankan lagi
+- Semua cell harus dijalankan ulang dari awal (Cell 1 → 2 → 3 → 4 → 5 → ...)
+- File `.py` hilang saat runtime restart, cell `%%writefile` harus dijalankan ulang
 
 ### Data CSV tidak terbaca
 - Pastikan file encoding UTF-8
 - Cek tidak ada karakter spesial di nama kolom
 - Untuk App 1: pastikan format tanggal `YYYY-MM` atau `YYYY-MM-DD`
 - Untuk App 2: pastikan ada minimal 2 kolom dengan data angka
+
+### App 3: Download CIFAR-10 lambat
+- CIFAR-10 ~170MB, didownload sekali lalu di-cache
+- Jika runtime restart, download ulang otomatis saat app pertama kali dibuka
 
 ---
 
@@ -216,12 +300,16 @@ Google Colab Runtime
 │
 ├── Cell 3 (%%writefile) ──→ app_timeseries.py
 ├── Cell 4 (%%writefile) ──→ app_segmentasi.py
+├── Cell 5 (%%writefile) ──→ app_cnn.py
 │
-├── Cell 5 ──→ subprocess: streamlit run app_timeseries.py --port 8501
+├── Cell 6 ──→ subprocess: streamlit run app_timeseries.py --port 8501
 │              └── ngrok tunnel: public URL → localhost:8501
 │
-└── Cell 6 ──→ subprocess: streamlit run app_segmentasi.py --port 8502
-               └── ngrok tunnel: public URL → localhost:8502
+├── Cell 7 ──→ subprocess: streamlit run app_segmentasi.py --port 8502
+│              └── ngrok tunnel: public URL → localhost:8502
+│
+└── Cell 8 ──→ subprocess: streamlit run app_cnn.py --port 8503
+               └── ngrok tunnel: public URL → localhost:8503
 ```
 
 ### Alur Data — App 1 (Time Series)
@@ -254,17 +342,35 @@ PCA 2 Komponen (untuk visualisasi saja)
 Visualisasi + Profil + Elbow Method
 ```
 
+### Alur Data — App 3 (CNN)
+```
+Input Gambar (32×32 RGB)
+    ↓
+Normalisasi (mean=[0.4914,0.4822,0.4465], std=[0.2023,0.1994,0.2010])
+    ↓
+Blok Konvolusi 1 (Conv→BN→ReLU×2 → MaxPool → Dropout)
+    ↓
+Blok Konvolusi 2 (Conv→BN→ReLU×2 → MaxPool → Dropout)
+    ↓
+Flatten → Fully Connected (4096→256→10)
+    ↓
+Softmax → 10 Probabilitas Kelas
+```
+
 ---
 
 ## 📝 Catatan untuk Instruktur
 
-- Semua app langsung jalan tanpa input apapun (data demo sudah tersedia sebagai default state)
+- Semua app langsung jalan tanpa input apapun (data demo / dataset sudah tersedia sebagai default)
 - Parameter sidebar bisa diubah real-time, semua chart dan metrik update otomatis
 - **App 1:** gunakan slider lag untuk demonstrasi underfitting vs overfitting
 - **App 1:** gunakan data saham untuk memperlihatkan keterbatasan model linear pada data noisy
 - **App 2:** gunakan slider K untuk demonstrasi efek jumlah cluster pada Elbow Method
 - **App 2:** aktifkan "Tampilkan Interpretasi Cluster" untuk sesi diskusi bisnis
-- Kedua app bisa berjalan bersamaan (port berbeda: 8501 dan 8502)
+- **App 3:** bandingkan CNN vs MLP untuk menjelaskan keunggulan konvolusi pada data spasial
+- **App 3:** gunakan Tab ⚖️ untuk benchmark live CNN vs SVM vs Random Forest
+- **App 3:** demonstrasikan distribusi shift dengan upload foto dari luar dataset CIFAR-10
+- Ketiga app bisa berjalan bersamaan (port berbeda: 8501, 8502, 8503)
 
 ---
 
